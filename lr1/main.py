@@ -11,8 +11,50 @@ def show_menu_positions():
     print("1.Add theatre")
     print("2.Add performance")
     print("3.Add actor")
-    print("4.Buy ticket")
-    print("5.Start performance")
+    print("4.Practice before performance")
+    print("5.Buy ticket")
+    print("6.Start performance")
+
+def show_price():
+    print("1. Детский\n2. Взрослый\n3. Студенческий")
+
+def show(spisok):
+    index: int = 1
+    for item in spisok:
+        print(f'{index}. {item.name}')
+        index += 1
+
+def choose_theatre(theatres):
+    print('Выберите театр:')
+    show(theatres)                                   #!!!!
+    index = int(input())
+    return theatres[index - 1]
+
+def choose_performance(theatre):
+    print('Выберите спектакль:')
+    theatre.show_afisha()
+    index = int(input())
+    return theatre.get_performance(index - 1)
+
+def choose_place(performance):
+    print('Выберите место:')
+    performance.show_places()
+    index = int(input())
+    return performance.get_place(index - 1)
+
+def choose_price():
+    print('Выберите тип билета:')
+    show_price()
+    index = int(input())
+    ticket_prices = [5, 20, 15]
+    return ticket_prices[index - 1]
+
+def choose_date(performance):
+    print('Выберите дату представления:')
+    performance.show_dates()
+    index = int(input())
+    return performance.get_date(index - 1)
+
 
 def main():
     theatres: list = []
@@ -31,36 +73,68 @@ def main():
                 stage: Stage = Stage(input("Input № of stage: "))
                 name = input("Input performance name: ")
                 dates: list = []
-                count = int(input("How many times it will be shown? "))
+                try:
+                    count = int(input("How many times it will be shown? "))
+                except ValueError:
+                    count = 1
+
                 for i in range(0, count):
                     dates.append(input("Input performance's date (hh:mm dd.mm.yyyy): "))
                 performance: Performance = Performance(name, dates)
                 performance.create_places(3, 3)
                 director: Director = Director(input("Input director name: "), int(input("Input his experience years: ")))
                 director.add_directed_play(performance)
-                booking.show_theatres()
-                index = int(input("Choose theatre for this performance: "))
+
+                show(theatres)
+                try:
+                    index = int(input("Choose theatre for this performance: "))
+                except ValueError:
+                    index = 1
                 theatres[index-1].add_performance(performance, stage)
                 performances.append(performance)
             case "3":
-                for performance in performances:
-                    print(performance.name)
+                show(performances)
+                try:
+                    index = int(input("Choose performance: "))
+                except ValueError:
+                    index = 1
 
-                index = int(input("For which performance? "))
-                actor: Actor = Actor(input("Input actor name: "), int(input("Input his age: ")))
+                actor: Actor = Actor(input("Input actor name: "), int(input("Input his/her age: ")))
                 dressing_room.dress_actor(actor)
-                role = input("Input his role: ")
+                role = input("Input his/her role: ")
                 performances[index-1].add_actor(actor, role)
             case "4":
-                tickets.append(booking.order_ticket())
-            case "5":
-                for theatre in theatres:
-                    print(theatre.name)
+                show(theatres)
+                try:
+                    index_theatre = int(input("Choose theatre: ")) - 1
+                except ValueError:
+                    index_theatre = 1
 
-                index = int(input("Choose theatre: ")) - 1
+                show(performances)
+                try:
+                    index_performance = int(input("Choose performance: ")) - 1
+                except ValueError:
+                    index_performance = 1
+
+                theatres[index_theatre].get_stage(theatres[index_theatre].performances[index_performance]).practice()
+            case "5":
+                theatre_index: int = choose_theatre(theatres)
+                performance_index: int = choose_performance(theatres[theatre_index])
+                place_index: int = choose_place(performances[performance_index])
+                price_index: int = choose_price()
+                date_index: int = choose_date(performances[performance_index])
+
+                tickets.append(booking.order_ticket(theatre_index, performance_index, place_index, price_index, date_index))
+            case "6":
+                show(theatres)
+                try:
+                    index = int(input("Choose theatre: ")) - 1
+                except ValueError:
+                    index = 1
+
                 theatres[index].start_performance()
 
         print("\033[H\033[J")
-        # os.system("clear")
+
 
 main()
