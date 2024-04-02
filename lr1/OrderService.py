@@ -9,7 +9,19 @@ class OrderService:
         self.__ticket_prices = [5, 20, 15]
         self.__theatres = theatres
 
-    def show_theatres(self):
+    def order_ticket(self, index_theatre, index_performance, index_place, index_price, index_date):
+        theatre: Theatre = self.__theatres[index_theatre-1]
+        performance: Performance = theatre.get_performance(index_performance-1)
+        place: Place = performance.get_place(index_place-1)
+        price: int = self.__ticket_prices[index_price-1]
+        date: str = performance.get_date(index_date - 1)
+
+        ticket: Ticket = Ticket(performance, place, price, date)
+
+        return ticket
+
+
+    """def show_theatres(self):
         for i in range(0, len(self.__theatres)):
             print(f"{i + 1}.{self.__theatres[i].name}")
 
@@ -58,4 +70,6 @@ class OrderService:
         return ticket
 
     def return_ticket(self, ticket):
-        ticket.delete()
+        ticket.delete()"""
+
+
