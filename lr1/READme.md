@@ -98,3 +98,11 @@
 - `__init__(self, theatres)`: Инициализация объекта класса OrderService
 - `order_ticket(self)`: Заказывает билет
 - `return_ticket(self, ticket)`: Возвращает в кассу билет
+
+### Класс TimeDate
+Класс для представления времени и дат спектаклей в системе.
+#### Методы
+- `__init__(self, time: str, date: str)`: Инициализация объекта класса TimeDate
+- `__is_valid_time(self, time)`: Валидация введенного времени(часы и минуты)
+- `__is_valid_date(self, date)`: Валидация введенной даты(день, месяц, год)
+- `display_date(self)`: Возвращает полную дату
